@@ -17,7 +17,9 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-client" % "2.4.0" % "provided" excludeAll(
     ExclusionRule(organization = "javax.servlet")
   ),
-  "org.bitbucket.eunjeon" % "seunjeon_2.11" % "1.1.0",
+  "org.bitbucket.eunjeon" % "seunjeon_2.11" % "1.1.0" excludeAll(
+    ExclusionRule(organization = "org.slf4j")
+  ),
   "com.typesafe.play" % "play-json_2.11" % "2.5.4" excludeAll(
     ExclusionRule(organization = "com.fasterxml.jackson.core")
   ),
