@@ -21,8 +21,15 @@
    * run below command in order to make an ecilpse project configuration
      <pre><code>sbt eclipse</code></pre>
    * refresh project
+ 
+ - run
+   * at eclipse IDE
+     - select scala file that you want to run, right click on that file, and choose "Scala application" of run menu
+   * at spark cluster(example)
+     <pre><code>spark-submit --class SparkApp --master spark://HOST01:7077 --deploy-mode client --executor-memory 500m ~/temp/SparkApp-assembly-1.0.jar cluster input/input2.json</code></pre>
 
  - trouble shooting
    * in case eclipse needs to use hadoop library, you could add hadoop-common-2.2.0-bin-master as windows' system variables.
       - reference URL: www.srccodes.com/p/article/39/error-util-shell-failed-locate-winutils-binary-hadoop-binary-path
+   * in case eclipse is not able to find main class of SparkApp, you should set jdk version as 1.7 at the Scala compiler properties.
     
