@@ -60,6 +60,7 @@ object SparkApp {
 
     var outputResult: List[String] = List()
     var jobNo = 1
+//    var outputListBuffer = new ListBuffer[String]()
 
     qeuryResult
       .map(t => ("contents: " + t.getAs[String](0), t.getAs[String](1)))
@@ -67,7 +68,6 @@ object SparkApp {
       .foreach(z => {
         println(">>>>> start " + jobNo.toString() + "th parsing >>>>>")
         jobNo += 1
-        var outputListBuffer2 = new ListBuffer[String]()
         var no = 1
         Analyzer
           .parse(z._1)
@@ -90,15 +90,15 @@ object SparkApp {
                   && !specificWordMatchResult(wordType, "SL") && !specificWordMatchResult(wordType, "SC")) {
                   //                  println(z._2 + "," + no + "," + wordType + "," + wordValue)
                   outputListBuffer += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
-                  outputListBuffer2 += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
+//                  outputListBuffer2 += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
                   no += 1
                 }
               }
             }
           })
-        outputResult = outputListBuffer2.toList
       })
 
+    outputResult = outputListBuffer.toList
     val rowRDD = outputResult.map(_.split(",")).map(p => Row(p(0), p(1), p(2), p(3).trim))
     val filteredRDD = sc.parallelize(rowRDD)
     val seunjeonDataFrame = sqlContext.createDataFrame(filteredRDD, resultSchema)
