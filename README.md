@@ -32,7 +32,7 @@
        - after add above configuration, run below command
          <pre><code>sbt assembly</code></pre>
        - after build jar file, you could find jar file at target/scala-2.10 folder, and you can use it for spark-submit on spark cluster
-     <pre><code>spark-submit --class SparkApp --master spark://HOST01:7077 --deploy-mode client --executor-memory 500m ~/temp/SparkApp-assembly-1.0.jar cluster input/input2.json</code></pre>
+     <pre><code>spark-submit --class SparkApp --master spark://HOST01:7077 --deploy-mode client --executor-memory 28000m ~/temp/SparkApp-assembly-1.0.jar cluster input/input3.json seunjeonResult.parquet</code></pre>
 
  - trouble shooting
    * in case eclipse needs to use hadoop library, you could add hadoop-common-2.2.0-bin-master as windows' system variables.
