@@ -60,7 +60,7 @@ object SparkApp {
 
     var outputResult: List[String] = List()
     var jobNo = 1
-//    var outputListBuffer = new ListBuffer[String]()
+    //    var outputListBuffer = new ListBuffer[String]()
 
     qeuryResult
       .map(t => ("contents: " + t.getAs[String](0), t.getAs[String](1)))
@@ -90,19 +90,27 @@ object SparkApp {
                   && !specificWordMatchResult(wordType, "SL") && !specificWordMatchResult(wordType, "SC")) {
                   //                  println(z._2 + "," + no + "," + wordType + "," + wordValue)
                   outputListBuffer += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
-//                  outputListBuffer2 += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
+                  //                  outputListBuffer2 += (z._2 + "," + no.toString() + "," + wordType + "," + wordValue)
                   no += 1
                 }
               }
             }
           })
-      })
 
-    outputResult = outputListBuffer.toList
-    val rowRDD = outputResult.map(_.split(",")).map(p => Row(p(0), p(1), p(2), p(3).trim))
-    val filteredRDD = sc.parallelize(rowRDD)
-    val seunjeonDataFrame = sqlContext.createDataFrame(filteredRDD, resultSchema)
-    seunjeonDataFrame.registerTempTable("result")
+        if (args.isEmpty) {
+
+        } else if (args(0).equals("cluster")) {
+          if ((jobNo % 101).equals(0)) {
+            outputResult = outputListBuffer.toList
+            val rowRDD = outputResult.map(_.split(",")).map(p => Row(p(0), p(1), p(2), p(3).trim))
+            val filteredRDD = sc.parallelize(rowRDD)
+            val seunjeonDataFrame = sqlContext.createDataFrame(filteredRDD, resultSchema)
+            seunjeonDataFrame.registerTempTable("result")
+            seunjeonDataFrame.select("url", "seq", "type", "name").write.format("parquet").mode(org.apache.spark.sql.SaveMode.Append).save(parquetInfo)
+            outputListBuffer.clear()
+          }
+        }
+      })
 
     if (args.isEmpty) {
       //      val results = sqlContext.sql("SELECT name, type FROM result WHERE type = 'NNP'")
@@ -110,7 +118,6 @@ object SparkApp {
       results.map(t => ("url: " + t(0), "seq: " + t(1), "type: " + t(2), "name: " + t(3))).collect().foreach(println)
 
     } else if (args(0).equals("cluster")) {
-      seunjeonDataFrame.select("url", "seq", "type", "name").write.format("parquet").save(parquetInfo)
 
       //      val outputRdd = sc.parallelize(mapResult.productIterator.toList)
       //      outputRdd.saveAsTextFile(writeMapFileInfo)
