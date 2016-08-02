@@ -113,6 +113,11 @@ object SparkApp {
       })
 
     if (args.isEmpty) {
+      outputResult = outputListBuffer.toList
+      val rowRDD = outputResult.map(_.split(",")).map(p => Row(p(0), p(1), p(2), p(3).trim))
+      val filteredRDD = sc.parallelize(rowRDD)
+      val seunjeonDataFrame = sqlContext.createDataFrame(filteredRDD, resultSchema)
+      seunjeonDataFrame.registerTempTable("result")
       //      val results = sqlContext.sql("SELECT name, type FROM result WHERE type = 'NNP'")
       val results = sqlContext.sql("SELECT url, seq, name, type FROM result")
       results.map(t => ("url: " + t(0), "seq: " + t(1), "type: " + t(2), "name: " + t(3))).collect().foreach(println)
