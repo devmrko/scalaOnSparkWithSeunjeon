@@ -12,7 +12,7 @@ import org.bitbucket.eunjeon.seunjeon.Analyzer
 
 import scala.collection.mutable.ListBuffer
 
-object SparkApp {
+object SparkSeunjeonApp {
 
   // schema of dataframe should be located outside of main 
   val resultSchema = StructType(StructField("url", StringType, true) ::
@@ -21,9 +21,9 @@ object SparkApp {
 
   def main(args: Array[String]) {
 
-    var readJsonFileInfo = "input/input2.json"
+    var readJsonFileInfo = "input/spam00.json"
     var writeMapFileInfo = "/output/seungjeon-output4"
-    var parquetInfo = "seunjeonResult.parquet"
+    var parquetInfo = "spamResult.parquet"
 
     val conf = new SparkConf()
 
@@ -100,7 +100,7 @@ object SparkApp {
         if (args.isEmpty) {
 
         } else if (args(0).equals("cluster")) {
-          if ((jobNo % 101).equals(0)) {
+          if ((jobNo % 11).equals(0)) {
             outputResult = outputListBuffer.toList
             val rowRDD = outputResult.map(_.split(",")).map(p => Row(p(0), p(1), p(2), p(3).trim))
             val filteredRDD = sc.parallelize(rowRDD)
